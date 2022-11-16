@@ -2,7 +2,7 @@ import jotform from "jotform";
 // require("dotenv").config();
 
 type JotformResponseType = {
-    content: string | [];
+    content: string | object | [];
     responseCode: number;
     duration: number;
     message: string;
@@ -24,16 +24,24 @@ class Jotform {
         return this.jotform;
     }
 
+    didResponseSucceed(response: JotformResponseType) {
+        return response.responseCode === 200;
+    }
+
     async getSubmission(submissionId: string) {
-        const submission = this.jotform.getSubmission(submissionId);
-        this.lastSubmissionId = submissionId;
-        return submission;
+        const submission:JotformResponseType = await this.jotform.getSubmission(submissionId);
+        if (this.didResponseSucceed(submission)) {
+            this.lastSubmissionId = submissionId;
+            return submission;
+        }
     }
 
     async getForm(formId: string | number) {
-        const form = await this.jotform.getForm(formId);
-        this.lastFormId = formId;
-        return form;
+        const form:JotformResponseType = await this.jotform.getForm(formId);
+        if (this.didResponseSucceed(form)) {
+            this.lastFormId = formId;
+            return form;
+        }
     }
 
     async deleteSubmission(submissionId: string) {
