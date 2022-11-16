@@ -1,6 +1,13 @@
 import jotform from "jotform";
 // require("dotenv").config();
 
+type JotformResponseType = {
+    content: string | [];
+    responseCode: number;
+    duration: number;
+    message: string;
+}
+
 class Jotform {
     jotform: any;
     lastSubmissionId: number | string;
@@ -18,7 +25,7 @@ class Jotform {
     }
 
     async getSubmission(submissionId: string) {
-        const submission = this.jotform.getSubmission(submissionId)
+        const submission = this.jotform.getSubmission(submissionId);
         this.lastSubmissionId = submissionId;
         return submission;
     }
