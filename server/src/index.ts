@@ -2,12 +2,14 @@ import express, { Request, Response} from "express";
 import mongoose from "mongoose";
 import User from "./models/User";
 import Jotform from "./jotform-api";
+import cors from "cors";
 import dotenv from "dotenv";
 dotenv.config();
+const jotform = new Jotform();
 const app = express();
+
+app.use(cors());
 app.use(express.json());
-
-
 
 const PORT = process.env.PORT || 3000;
 console.log("process.env.MONGOOSE_URL", process.env.MONGOOSE_URL)
@@ -49,4 +51,13 @@ app.get("/api/user", async (req:Request, res:Response) => {
             status: 404            
         });
     }
+});
+
+
+app.get("/api/getForm", async (req:Request, res:Response) => {
+    const formId = req.query.formId;
+    const form = await jotform.getForm(formId.toString());
+    console.log(formId, form)
+    console.log(await jotform.getJotform().getForm(formId.toString()))
+    res.json(form);
 });
