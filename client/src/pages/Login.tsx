@@ -4,6 +4,7 @@ import "./Login.css";
 
 function Login(props: any) {
   const setUser = props.setUser;
+  const loginHandler = new LoginHandler();
   const [email, setEmail] = useState("");
   const onEmailChange = (e: any) => {
     setEmail(e.target.value);
@@ -17,7 +18,7 @@ function Login(props: any) {
   const handleLogin = async (e: any) => {
     e.preventDefault();
     if (validateEmail(email)) {
-      const resp = await LoginHandler.login(email);
+      const resp = await loginHandler.login(email);
       console.log("email: ", email);
       console.log("resp: ", resp);
       const user = resp.user

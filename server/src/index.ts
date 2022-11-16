@@ -2,11 +2,14 @@ import express, { Request, Response} from "express";
 import mongoose from "mongoose";
 import User from "./models/User";
 import Jotform from "./jotform-api";
+import Reader from "./excell-reader";
 import cors from "cors";
 import dotenv from "dotenv";
 dotenv.config();
 const jotform = new Jotform();
 const app = express();
+const path = "./src/static/records.csv";
+const reader = new Reader(path);
 
 app.use(
     cors({
@@ -57,11 +60,20 @@ app.get("/api/user", async (req:Request, res:Response) => {
     }
 });
 
-
 app.get("/api/getForm", async (req:Request, res:Response) => {
     const formId = req.query.formId;
     const form = await jotform.getForm(formId.toString());
     console.log(formId, form)
     console.log(await jotform.getJotform().getForm(formId.toString()))
     res.json(form);
+});
+
+app.get("/api/records", async (req:Request, res:Response) => {
+    const headers = reader.getHeaders()
+    res.json(headers);
+});
+
+app.get("/api/rows", async (req:Request, res:Response) => {
+    const content = reader.getRows()
+    res.json(content);
 });
