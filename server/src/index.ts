@@ -19,7 +19,7 @@ app.use(
 app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
-console.log("process.env.MONGOOSE_URL", process.env.MONGOOSE_URL)
+
 const db = mongoose.connect(process.env.MONGOOSE_URL).then(
     () => {
         console.log("Connected to MongoDB");
@@ -68,12 +68,26 @@ app.get("/api/getForm", async (req:Request, res:Response) => {
     res.json(form);
 });
 
-app.get("/api/records", async (req:Request, res:Response) => {
+app.get("/api/headers", async (req:Request, res:Response) => {
     const headers = reader.getHeaders()
     res.json(headers);
 });
 
 app.get("/api/rows", async (req:Request, res:Response) => {
-    const content = reader.getRows()
+    const content = reader.getRows(undefined)
+    res.json(content);
+});
+
+app.get("/api/row", async (req:Request, res:Response) => {
+    //@ts-ignore
+    const content = reader.getRow(req.query.row)
+    res.json(content);
+});
+
+app.get("/api/getRowByEmail", async (req:Request, res:Response) => {
+    console.log(reader)
+    console.log(req.query.email)
+    //@ts-ignore
+    const content = reader.getRowByEmail(req.query.email)
     res.json(content);
 });

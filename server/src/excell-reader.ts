@@ -32,23 +32,47 @@ export default class Reader {
                 lines.forEach((line, index) => {
                     if (index === 0) {
                         this.headers = line.split(',');
+                    } else {
+                        const row: Row = {};
+                        const columns = line.split(',');
+                        columns.forEach((column, index) => {
+                            row[index] = column;
+                        });
+                        // hard coded below
+                        if (Object.entries(row).length == Object.entries(this.headers).length + 1) {
+                            this.content.push(row);
+                        }
                     }
-                    const row: Row = {};
-                    const columns = line.split(',');
-                    columns.forEach((column, index) => {
-                        row[index] = column;
-                    });
-                    this.content.push(row);
                 });
             });
         }
     }
 
-    getRows(): Row[] {
+    getRows(row: string | undefined): Row[] {
         return this.content;
+    }
+
+    getRow(row: string | number | undefined): Row[] {
+        return this.content[row];
     }
 
     getHeaders(): string[] {
         return this.headers;
+    }
+
+    getRowByEmail(email: string): Row[] {
+        const rows: Row[] = [];
+        console.log(this.content)
+        this.content.forEach((row) => {
+            email = email.toUpperCase();
+            if (row[1].toUpperCase() === email) {
+                // RSEMAIL
+                rows.push(row);
+            } else if (row[3].toUpperCase() === email) {
+                // RREMAIL
+                rows.push(row);
+            }
+        });
+        return rows;
     }
 }
