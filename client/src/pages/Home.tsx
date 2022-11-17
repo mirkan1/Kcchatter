@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import FormHandler from "../handlers/FormHandler";
+import SelectInput from "../components/SelectInput";
 import "./Home.css";
 
 function Home(props: any) {
-    const formHandler = new FormHandler(props.FORM_ID);
+    const FORM_ID = props.FORM_ID;
+    const formHandler = new FormHandler(FORM_ID);
     const user = props.user;
     const [count, setCount] = useState("");
     const formId = props.FORM_ID;
@@ -26,7 +28,8 @@ function Home(props: any) {
         <div className="smaller-body">
             <h1>Welcome To Home Page</h1>
             <h2>Submissions Count: {count}</h2>
-            <button onClick={getSubmsissionsCount}>Get Submissions Count</button>
+            {/* <button onClick={getSubmsissionsCount}>Get Submissions Count</button> */}
+            <SelectInput rows={user.rows} FORM_ID={FORM_ID} />
         </div>
     );
 }

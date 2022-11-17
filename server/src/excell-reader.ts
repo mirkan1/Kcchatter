@@ -31,15 +31,15 @@ export default class Reader {
                 const lines = data.split('\n');
                 lines.forEach((line, index) => {
                     if (index === 0) {
-                        this.headers = line.split(',');
+                        this.headers = line.split(';');
                     } else {
                         const row: Row = {};
-                        const columns = line.split(',');
+                        const columns = line.split(';');
                         columns.forEach((column, index) => {
                             row[index] = column;
                         });
                         // hard coded below
-                        if (Object.entries(row).length == Object.entries(this.headers).length + 1) {
+                        if (Object.entries(row).length == Object.entries(this.headers).length) {
                             this.content.push(row);
                         }
                     }
@@ -69,12 +69,12 @@ export default class Reader {
             if (row[1].toUpperCase() === email) {
                 // RSEMAIL
                 role = this.headers[1];
-                name = row[0]
+                name = row[0];
                 rows.push(row);
             } else if (row[3].toUpperCase() === email) {
                 // RREMAIL
                 role = this.headers[3];
-                name = row[2]
+                name = row[2];
                 rows.push(row);
             }
         }, [role, name]);
