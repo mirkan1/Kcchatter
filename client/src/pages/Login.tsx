@@ -18,17 +18,27 @@ function Login(props: any) {
   const handleLogin = async (e: any) => {
     e.preventDefault();
     if (validateEmail(email)) {
-      const resp = await loginHandler.login(email);
-      console.log("email: ", email);
-      console.log("resp: ", resp);
-      const user = resp.user
-      const name = user.name
-      const role = user.role
-      const _id = user._id
-      const created_at = user.created_at
-      const updated_at = user.updated_at
-      // set user
-      setUser(email);
+      const _email = email.toUpperCase()
+      const fileLogin = await loginHandler.fileLogin(_email);
+      const name = fileLogin.name.toUpperCase()
+      const role = fileLogin.role.toUpperCase()
+      const mongoLogin = await loginHandler.login(_email);
+      const rows = fileLogin.rows
+      var _id, created_at, updated_at;
+      if (mongoLogin.status === 404) {
+        const mongoSignup = await loginHandler.signup(name, _email, role);
+        _id = mongoSignup._id;
+        created_at = mongoSignup.created_at;
+        updated_at = mongoSignup.updated_at;
+      } else {
+        _id = mongoLogin._id;
+        created_at = mongoLogin.created_at;
+        updated_at = mongoLogin.updated_at;
+      }
+      setUser({
+        _email, name, rows, role,
+        created_at, updated_at,
+      });
     } else {
       console.log("invalid email");
     }

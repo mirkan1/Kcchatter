@@ -6,7 +6,7 @@ import Reader from "./excell-reader";
 import cors from "cors";
 import dotenv from "dotenv";
 dotenv.config();
-const jotform = new Jotform();
+const jotform = new Jotform(true);
 const app = express();
 const path = "./src/static/records.csv";
 const reader = new Reader(path);
@@ -18,7 +18,7 @@ app.use(
 );
 app.use(express.json());
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 const db = mongoose.connect(process.env.MONGOOSE_URL).then(
     () => {
@@ -37,7 +37,7 @@ app.post("/api/user", async (req:Request, res:Response) => {
     const user = new User({
         name: req.body.name,
         email: req.body.email,
-        password: req.body.password,
+        password: req.body.password || "",
         role: req.body.role,
         created_at: new Date(),
         updated_at: new Date()
@@ -63,8 +63,6 @@ app.get("/api/user", async (req:Request, res:Response) => {
 app.get("/api/getForm", async (req:Request, res:Response) => {
     const formId = req.query.formId;
     const form = await jotform.getForm(formId.toString());
-    console.log(formId, form)
-    console.log(await jotform.getJotform().getForm(formId.toString()))
     res.json(form);
 });
 
@@ -84,10 +82,8 @@ app.get("/api/row", async (req:Request, res:Response) => {
     res.json(content);
 });
 
-app.get("/api/getRowByEmail", async (req:Request, res:Response) => {
-    console.log(reader)
-    console.log(req.query.email)
+app.get("/api/getRowsByEmail", async (req:Request, res:Response) => {
     //@ts-ignore
-    const content = reader.getRowByEmail(req.query.email)
+    const content = reader.getRowsByEmail(req.query.email)
     res.json(content);
 });

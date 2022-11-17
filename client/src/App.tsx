@@ -9,7 +9,7 @@ function App() {
   console.log(user)
 
   return (
-    user ? <Home FORM_ID={FORM_ID} /> : <Login setUser={setUser} />
+    user ? <Home FORM_ID={FORM_ID} user={user} /> : <Login setUser={setUser} />
   )
 }
 

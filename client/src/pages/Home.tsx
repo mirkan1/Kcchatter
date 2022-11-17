@@ -4,16 +4,23 @@ import "./Home.css";
 
 function Home(props: any) {
     const formHandler = new FormHandler(props.FORM_ID);
+    const user = props.user;
     const [count, setCount] = useState("");
     const formId = props.FORM_ID;
     const getSubmsissionsCount = async () => {
         const count = await formHandler.getTotalSubmissions(formId);
+        console.log("count", count);
         setCount(count);
     }
-    const componentDidMount = async () => {
-        await formHandler.getForm(formId);
-        setCount(formHandler.count || "");
-    }
+    useEffect(() => {
+        const forSetter = async () => {
+            const form = await formHandler.getForm(formId);
+            setCount(formHandler.count || "");
+            console.log("formHandler", formHandler);
+        }
+        forSetter()
+           .catch((err: any) => console.log(err));
+    }, []);
 
     return (
         <div className="smaller-body">

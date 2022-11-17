@@ -60,19 +60,24 @@ export default class Reader {
         return this.headers;
     }
 
-    getRowByEmail(email: string): Row[] {
+    getRowsByEmail(email: string): Object {
+        var role, name;
         const rows: Row[] = [];
         console.log(this.content)
         this.content.forEach((row) => {
             email = email.toUpperCase();
             if (row[1].toUpperCase() === email) {
                 // RSEMAIL
+                role = this.headers[1];
+                name = row[0]
                 rows.push(row);
             } else if (row[3].toUpperCase() === email) {
                 // RREMAIL
+                role = this.headers[3];
+                name = row[2]
                 rows.push(row);
             }
-        });
-        return rows;
+        }, [role, name]);
+        return { role, name, rows };
     }
 }

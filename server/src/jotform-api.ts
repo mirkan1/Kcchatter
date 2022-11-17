@@ -12,9 +12,9 @@ class Jotform {
     jotform: any;
     lastSubmissionId: number | string;
     lastFormId: number | string;
-    constructor() {
+    constructor(debug: boolean = false) {
         jotform.options({
-            debug: true,
+            debug: debug,
             apiKey: process.env.JOTFORM_API_KEY
         });
         this.jotform = jotform
@@ -30,18 +30,14 @@ class Jotform {
 
     async getSubmission(submissionId: string) {
         const submission:JotformResponseType = await this.jotform.getSubmission(submissionId);
-        if (this.didResponseSucceed(submission)) {
-            this.lastSubmissionId = submissionId;
-            return submission;
-        }
+        this.lastSubmissionId = submissionId;
+        return submission;
     }
 
     async getForm(formId: string | number) {
         const form:JotformResponseType = await this.jotform.getForm(formId);
-        if (this.didResponseSucceed(form)) {
-            this.lastFormId = formId;
-            return form;
-        }
+        this.lastFormId = formId;
+        return form;
     }
 
     async deleteSubmission(submissionId: string) {
