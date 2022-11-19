@@ -19,9 +19,9 @@ type answerType = {
 
 type SubmissionType = {
     id: string;
-    form_id: string;
+    form_id: string; // FormType
     ip: string;
-    created_at: string;
+    created_at: string; // "YYYY-MM-DD HH:MM:SS"
     status: string;
     new: string;
     flag: string;
@@ -32,7 +32,8 @@ type SubmissionType = {
 
 class Jotform {
     private jotform: any;
-    submissions: object = {};
+    private submissions: SubmissionType[] = [];
+    private submissionCount: number = 0;
     lastFormId: number | string;
     constructor(debug: boolean = false) {
         jotform.options({
@@ -52,6 +53,23 @@ class Jotform {
 
     setSubmissionIntoSubmissions(submission: SubmissionType) {
         this.submissions[submission.id] = submission;
+    }
+
+    sortSubmissionsByDate(submissions: SubmissionType[]) {
+        this.submissionCount = submissions.length;
+        return submissions.sort((a:SubmissionType, b:SubmissionType) => {
+            const aDate = new Date(a.created_at);
+            const bDate = new Date(b.created_at);
+            return aDate.getTime() - bDate.getTime();
+        });        
+    }
+
+    getSubmissions() {
+        if (this.submissionCount == this.submissions.length) {
+            return this.submissions;
+        }
+        this.sortSubmissionsByDate(this.submissions);
+        return this.submissions;
     }
 
     async getSubmission(submissionId: string) {
@@ -89,6 +107,17 @@ class Jotform {
             [`submission[${fieldId}]`]: value
         }
         return await this.editSubmission(submissionId, data);
+    }
+
+    async getSubmissionsFromFormId(formId: string | number) {
+        const submissions:SubmissionType[] = await this.jotform.getSubmissions(formId);
+        submissions.forEach((submission:SubmissionType) => {
+            this.setSubmissionIntoSubmissions(submission);
+        });
+        if (this.submissionCount != this.submissions.length) {
+            this.sortSubmissionsByDate(submissions);
+        }
+        return submissions;
     }
 }
 

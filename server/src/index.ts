@@ -106,3 +106,10 @@ app.delete("/api/deleteSubmission", async (req:Request, res:Response) => {
     const content = await jotform.deleteSubmission(req.query.submissionId);
     res.json(content);
 });
+
+app.get("/api/getSubmissions", (req:Request, res:Response) => {
+    //@ts-ignore
+    const content = jotform.getSubmissions();
+    console.log(content, "content")
+    res.json({...content});
+});
