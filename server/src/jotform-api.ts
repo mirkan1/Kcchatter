@@ -32,7 +32,7 @@ type SubmissionType = {
 
 class Jotform {
     private jotform: any;
-    lastSubmissionId: number | string;
+    submissions: object = {};
     lastFormId: number | string;
     constructor(debug: boolean = false) {
         jotform.options({
@@ -46,9 +46,17 @@ class Jotform {
         return this.jotform;
     }
 
+    getSubmissionIfExists(submissionId: string) {
+        return this.submissions[submissionId];
+    }
+
+    setSubmissionIntoSubmissions(submission: SubmissionType) {
+        this.submissions[submission.id] = submission;
+    }
+
     async getSubmission(submissionId: string) {
-        const submission:SubmissionType = await this.jotform.getSubmission(submissionId);
-        this.lastSubmissionId = submissionId;
+        const submission:SubmissionType = this.getSubmissionIfExists(submissionId) || await this.jotform.getSubmission(submissionId); 
+        this.setSubmissionIntoSubmissions(submission);
         return submission;
     }
 
