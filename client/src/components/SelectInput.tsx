@@ -22,7 +22,7 @@ export default function SelectInput(props: any) {
         const url = `https://form.jotform.com/${FORM_ID}?REP=${rep}&STORE=${store}&GUID=${guid}`;
         window.open(url, "_blank");        
     }
-    console.log(selectedRow)
+    console.log("selectedRow", selectedRow)
     return (
         <div className="select-input">
             <select onChange={handleSelect}>
