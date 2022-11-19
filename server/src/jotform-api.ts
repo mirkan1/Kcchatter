@@ -1,15 +1,37 @@
 import jotform from "jotform";
+import { Date } from "mongoose";
 // require("dotenv").config();
 
-type JotformResponseType = {
+type FormType = {
     content: string | object | [];
     responseCode: number;
     duration: number;
-    message: string;
+    message: answerType;
+}
+
+type answerType = {
+    name: string;
+    order: string;
+    text: string;
+    type: string;
+    answer: string | object
+}
+
+type SubmissionType = {
+    id: string;
+    form_id: string;
+    ip: string;
+    created_at: string;
+    status: string;
+    new: string;
+    flag: string;
+    notes: string;
+    updated_at: string; // "YYYY-MM-DD HH:MM:SS"
+    answers: object;
 }
 
 class Jotform {
-    jotform: any;
+    private jotform: any;
     lastSubmissionId: number | string;
     lastFormId: number | string;
     constructor(debug: boolean = false) {
@@ -24,18 +46,14 @@ class Jotform {
         return this.jotform;
     }
 
-    didResponseSucceed(response: JotformResponseType) {
-        return response.responseCode === 200;
-    }
-
     async getSubmission(submissionId: string) {
-        const submission:JotformResponseType = await this.jotform.getSubmission(submissionId);
+        const submission:SubmissionType = await this.jotform.getSubmission(submissionId);
         this.lastSubmissionId = submissionId;
         return submission;
     }
 
     async getForm(formId: string | number) {
-        const form:JotformResponseType = await this.jotform.getForm(formId);
+        const form:FormType = await this.jotform.getForm(formId);
         this.lastFormId = formId;
         return form;
     }
@@ -49,7 +67,7 @@ class Jotform {
         }
     }
 
-    async editSubmission(submissionId: string, data: any) {
+    async editSubmission(submissionId: string, data: object) {
         try {
             await this.jotform.editSubmission(submissionId, data);
             return true;
@@ -57,12 +75,13 @@ class Jotform {
             return false;
         }
     }
+
+    async editSubmissionField(submissionId: string, fieldId: string, value: string) {
+        const data = {
+            [`submission[${fieldId}]`]: value
+        }
+        return await this.editSubmission(submissionId, data);
+    }
 }
 
 export default Jotform;
-
-// def activate_trigger(submissionID, fieldID, state):
-//     query = f'submission[{fieldID}]={state}'
-//     url = f"https://api.jotform.com/submission/{submissionID}
-//              ?apiKey={random.choice(JOTFORM_API_PURSE)}&{query}"
-//     response = requests.request("POST", url)

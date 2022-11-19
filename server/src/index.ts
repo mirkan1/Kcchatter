@@ -87,3 +87,22 @@ app.get("/api/getRowsByEmail", async (req:Request, res:Response) => {
     const content = reader.getRowsByEmail(req.query.email)
     res.json(content);
 });
+
+app.post("/api/editSubmissionField", async (req:Request, res:Response) => {
+    //@ts-ignore
+    const content = await jotform.editSubmissionField(req.query.submissionId, req.query.fieldId, req.query.value);
+    // const content = await jotform.editSubmission(req.query.submissionId, req.query.data);
+    res.json(content);
+});
+
+app.get("/api/getSubmission", async (req:Request, res:Response) => {
+    //@ts-ignore
+    const content = await jotform.getSubmission(req.query.submissionId);
+    res.json(content);
+});
+
+app.delete("/api/deleteSubmission", async (req:Request, res:Response) => {
+    //@ts-ignore
+    const content = await jotform.deleteSubmission(req.query.submissionId);
+    res.json(content);
+});
