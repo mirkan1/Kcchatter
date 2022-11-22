@@ -10,7 +10,8 @@ const userSchema = new Schema({
     password: String,
     role: String,
     created_at: Date,
-    updated_at: Date
+    updated_at: Date,
+    photo: String,
 });
 
 const UserModel = mongoose.model('User', userSchema);

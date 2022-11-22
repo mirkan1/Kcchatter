@@ -12,6 +12,7 @@
   "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
+    "csv-string": "^4.1.1",
     "dotenv": "^16.0.3",
     "excel": "^1.0.1",
     "express": "^4.18.2",

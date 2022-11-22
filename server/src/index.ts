@@ -6,7 +6,8 @@ import Reader from "./excell-reader";
 import cors from "cors";
 import dotenv from "dotenv";
 dotenv.config();
-const jotform = new Jotform(true);
+const limit = parseInt(process.env.LIMIT || "1000");
+const jotform = new Jotform(true, process.env.FORM_ID, limit);
 const app = express();
 const path = "./src/static/records.csv";
 const reader = new Reader(path);
@@ -40,10 +41,27 @@ app.post("/api/user", async (req:Request, res:Response) => {
         password: req.body.password || "",
         role: req.body.role,
         created_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
+        photo: req.body.photo || ""
     });
     const newUser = await user.save();
     res.json(newUser);
+});
+
+app.put("/api/user/:id", async (req:Request, res:Response) => {
+    const user = await User.findById(req.params.id);
+    if (user) {
+        user.name = req.body.name;
+        user.email = req.body.email;
+        user.password = req.body.password || "";
+        user.role = req.body.role;
+        user.updated_at = new Date();
+        user.photo = req.body.photo || "";
+        const updatedUser = await user.save();
+        res.json(updatedUser);
+    } else {
+        res.status(404).json({message: "User not found"});
+    }
 });
 
 app.get("/api/user", async (req:Request, res:Response) => {
@@ -110,6 +128,11 @@ app.delete("/api/deleteSubmission", async (req:Request, res:Response) => {
 app.get("/api/getSubmissions", (req:Request, res:Response) => {
     //@ts-ignore
     const content = jotform.getSubmissions();
-    console.log(content, "content")
-    res.json({...content});
+    const contentLength = Object.keys(content).length;
+    console.log("contentLength :", contentLength)
+    res.json({
+        content: {...content},
+        status: 200,
+        count: contentLength
+    });
 });

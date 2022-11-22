@@ -34,13 +34,19 @@ class Jotform {
     private jotform: any;
     private submissions: SubmissionType[] = [];
     private submissionCount: number = 0;
-    lastFormId: number | string;
-    constructor(debug: boolean = false) {
+    private formId: number | string;
+    private limit: number = 1000;
+    private usage: number = 0;
+    constructor(debug: boolean = false, formId: string | number = null, limit: number = 1000) {
         jotform.options({
             debug: debug,
             apiKey: process.env.JOTFORM_API_KEY
         });
-        this.jotform = jotform
+        this.jotform = jotform;
+        console.log(jotform.getUser())
+        this.usage = jotform.getUsage();
+        this.setFormId(formId);
+        this.setSubmissions();
     }
 
     getJotform() {
@@ -64,12 +70,24 @@ class Jotform {
         });        
     }
 
-    getSubmissions() {
+    async setSubmissions() {
+        const submissions = await this.getSubmissionsFromFormId(this.formId);
+        submissions.forEach(element => {
+            this.setSubmissionIntoSubmissions(element);
+        });
         if (this.submissionCount == this.submissions.length) {
             return this.submissions;
         }
         this.sortSubmissionsByDate(this.submissions);
         return this.submissions;
+    }
+
+    getSubmissions() {
+        return this.submissions;
+    }
+
+    async setFormId(formId: string | number) {
+        this.formId = formId;
     }
 
     async getSubmission(submissionId: string) {
@@ -80,7 +98,6 @@ class Jotform {
 
     async getForm(formId: string | number) {
         const form:FormType = await this.jotform.getForm(formId);
-        this.lastFormId = formId;
         return form;
     }
 
@@ -110,13 +127,15 @@ class Jotform {
     }
 
     async getSubmissionsFromFormId(formId: string | number) {
-        const submissions:SubmissionType[] = await this.jotform.getSubmissions(formId);
-        submissions.forEach((submission:SubmissionType) => {
-            this.setSubmissionIntoSubmissions(submission);
-        });
-        if (this.submissionCount != this.submissions.length) {
-            this.sortSubmissionsByDate(submissions);
+        const query = {
+            limit: this.limit,
+            offset: 0,
+            orderby: "created_at",
+            filter: "created_at",
+            fullText: "",
         }
+        console.log("formId", formId)
+        const submissions:SubmissionType[] = await this.jotform.getFormSubmissions(formId.toString(), query);
         return submissions;
     }
 }

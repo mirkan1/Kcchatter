@@ -1,5 +1,7 @@
 import parseXlsx from 'excel';
 import fs from "fs";
+import { detect } from 'csv-string'
+import { sensitiveHeaders } from 'http2';
 
 type Row = {
     [key: string]: string;
@@ -8,6 +10,7 @@ type Row = {
 export default class Reader {
     content: Row[] = [];
     headers: string[] = [];
+    delimeter: string = ',';
 
     constructor(filePath: string) {
         const fileName = filePath.split('\\').pop();
@@ -31,14 +34,17 @@ export default class Reader {
                 const lines = data.split('\n');
                 lines.forEach((line, index) => {
                     if (index === 0) {
-                        this.headers = line.split(';');
+                        this.setCsvLogic(line)
                     } else {
                         const row: Row = {};
-                        const columns = line.split(';');
+                        const columns = line.split(this.delimeter);
                         columns.forEach((column, index) => {
-                            row[index] = column;
+                            row[index] = column.replace("\r", "");
                         });
-                        // hard coded below
+                        const storeNum = columns[9];
+                        const state = columns[7];
+                        const fullAddress = `${columns[4]}-${storeNum} | ${columns[5]} | ${columns[6]}, ${state}`;
+                        row[Object.keys(row).length] = fullAddress;
                         if (Object.entries(row).length == Object.entries(this.headers).length) {
                             this.content.push(row);
                         }
@@ -46,6 +52,12 @@ export default class Reader {
                 });
             });
         }
+    }
+
+    setCsvLogic(line: string) {
+        this.delimeter = detect(line);
+        this.headers = line.split(this.delimeter);
+        this.headers.push('Full Address');
     }
 
     getRows(row: string | undefined): Row[] {
@@ -67,17 +79,28 @@ export default class Reader {
         this.content.forEach((row) => {
             email = email.toUpperCase();
             if (row[1].toUpperCase() === email) {
-                // RSEMAIL
+                // R S EMAIL
                 role = this.headers[1];
                 name = row[0];
                 rows.push(row);
             } else if (row[3].toUpperCase() === email) {
-                // RREMAIL
+                // R R EMAIL
                 role = this.headers[3];
                 name = row[2];
                 rows.push(row);
+            } else if (row[11].toUpperCase() === email) {
+                // CLIENT1 EMAIL
+                role = this.headers[11];
+                name = row[10];
+                rows.push(row);
+            } else if (row[13].toUpperCase() === email) {
+                // CLIENT2 EMAIL
+                role = this.headers[13];
+                name = row[12];
+                rows.push(row);
             }
         }, [role, name]);
+        console.log(name, role)
         return { role, name, rows };
     }
 }
