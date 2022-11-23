@@ -103,7 +103,7 @@ export default function SubmissionDiv(props: any) {
                                 <p>{followUpNeeded.answer}</p>
                             </div>
                             <div className="single-submission-cell photos-cell">
-                                {photos.answer.map((photo: any, index: number) => {
+                                {photos.answer.map((photo: string, index: number) => {
                                     return <img id="pic" data-lazy={photo} alt={index.toString()} key={index} className="submission-img"/>
                                 })}                                
                             </div>
