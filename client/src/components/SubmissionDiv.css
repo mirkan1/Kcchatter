@@ -1,0 +1,93 @@
+
+.submissions-holder {
+    width: inherit;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+}
+
+.single-submission {
+    display: grid;
+    grid-template-rows: 1fr 9fr;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: fit-content;
+    max-width: 70w;
+    /* width: 100%;
+    max-width: 85vw; */
+    background-color: #fff;
+    margin: auto;
+}
+
+ .single-submission-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 60vw;
+    max-width: 80vw;
+}
+.single-submission-row > * {
+    margin: 10px;
+    padding: 10px;
+}
+
+.single-submission-column {    
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+.single-submission-cell{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+p, h6 {
+    color: black
+}
+
+p {
+    text-align: center;
+    font-size: large;
+}
+
+h6 {
+    text-align: center;
+    font-size: large;
+}
+.single-submission-cell > * {
+    margin: 10px;
+    padding: 10px;
+}
+
+.photos-cell {
+    overflow-x: auto;
+}
+
+.single-submission-column-right-with-photo {
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr 3fr;
+}
+
+.above-selection-class {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: center;
+    padding: 0px 10px;
+    column-gap: 10px;
+}
+
+.submission-img {
+    width: 25rem;
+    height: 25rem;
+    object-fit: cover;
+}

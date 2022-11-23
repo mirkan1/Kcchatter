@@ -75,7 +75,6 @@ export default class Reader {
     getRowsByEmail(email: string): Object {
         var role, name;
         const rows: Row[] = [];
-        console.log(this.content)
         this.content.forEach((row) => {
             email = email.toUpperCase();
             if (row[1].toUpperCase() === email) {
@@ -100,7 +99,6 @@ export default class Reader {
                 rows.push(row);
             }
         }, [role, name]);
-        console.log(name, role)
         return { role, name, rows };
     }
 }

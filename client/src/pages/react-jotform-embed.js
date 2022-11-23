@@ -44,8 +44,9 @@ import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 
 var iframeStyle = {
-  width: '100%',
-  height: '300px'
+  display: "none",
+  // width: '100%',
+  height: '100%'
 };
 
 var JotformEmbed = /*#__PURE__*/function (_React$Component) {
@@ -66,6 +67,7 @@ var JotformEmbed = /*#__PURE__*/function (_React$Component) {
   _createClass(JotformEmbed, [{
     key: "handleIframeMessage",
     value: function handleIframeMessage(e) {
+      console.log("handleIframeMessage", e)
       var props = this.props;
       
       if (!e.data.split) {
@@ -82,9 +84,9 @@ var JotformEmbed = /*#__PURE__*/function (_React$Component) {
             iframe.scrollIntoView();
             break;
 
-          case 'setHeight':
-            iframe.style.height = "".concat(args[1], "px");
-            break;
+          // case 'setHeight':
+          //   iframe.style.height = "".concat(args[1], "px");
+          //   break;
 
           case 'collapseErrorPage':
             if (iframe.clientHeight > globalThis.innerHeight) {
@@ -111,6 +113,17 @@ var JotformEmbed = /*#__PURE__*/function (_React$Component) {
           }), '*');
         }
       }
+
+      const origin = e.origin || e.originalEvent.origin;
+      if (origin === "https://submit.jotform.com") {
+        // make the iframe height to 0 to hide the iframe
+        iframe.style.height = "0px";
+        // remove the iframe after 1 second
+        // setTimeout(() => {
+        //   iframe.parentNode.removeChild(iframe);
+        // }
+        // , 1000);
+      }
     }
   }, {
     key: "componentWillMount",
@@ -133,7 +146,6 @@ var JotformEmbed = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      console.log("rendering")
       var props = this.props;
       return /*#__PURE__*/React.createElement("iframe", {
         ref: "iframe",
@@ -151,7 +163,6 @@ var JotformEmbed = /*#__PURE__*/function (_React$Component) {
       return props.src !== nextProps.src || props.className !== nextProps.className || props.scrolling !== nextProps.scrolling;
     }
   }]);
-
   return JotformEmbed;
 }(React.Component);
 

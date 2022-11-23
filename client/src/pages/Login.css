@@ -10,3 +10,7 @@
     align-content: center;
     padding: 10px;
 }
+
+.selection-body {
+    height: 100%;
+}

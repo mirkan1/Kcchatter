@@ -36,17 +36,24 @@ class Jotform {
     private submissionCount: number = 0;
     private formId: number | string;
     private limit: number = 1000;
-    private usage: number = 0;
+    private offset: number = 0;
+    private isReady: boolean = false;
     constructor(debug: boolean = false, formId: string | number = null, limit: number = 1000) {
         jotform.options({
             debug: debug,
             apiKey: process.env.JOTFORM_API_KEY
         });
-        this.jotform = jotform;
-        console.log(jotform.getUser())
-        this.usage = jotform.getUsage();
+        this.jotform = jotform
         this.setFormId(formId);
-        this.setSubmissions();
+    }
+
+    async getUsage() {
+        const usage = await jotform.getUsage();
+        return usage;
+    }
+
+    safeToRead() {
+        if (!this.isReady) throw("Submissions not ready");
     }
 
     getJotform() {
@@ -71,22 +78,24 @@ class Jotform {
     }
 
     async setSubmissions() {
-        const submissions = await this.getSubmissionsFromFormId(this.formId);
+        this.isReady = false;
+        const submissions:SubmissionType[] = await this.getSubmissionsFromFormId(this.formId);
         submissions.forEach(element => {
             this.setSubmissionIntoSubmissions(element);
         });
         if (this.submissionCount == this.submissions.length) {
-            return this.submissions;
+            return true;
         }
-        this.sortSubmissionsByDate(this.submissions);
-        return this.submissions;
+        this.submissions = this.sortSubmissionsByDate(submissions);
+        this.submissionCount = this.submissions.length;
+        this.isReady = true;
     }
 
     getSubmissions() {
         return this.submissions;
     }
 
-    async setFormId(formId: string | number) {
+    setFormId(formId: string | number) {
         this.formId = formId;
     }
 
@@ -129,14 +138,44 @@ class Jotform {
     async getSubmissionsFromFormId(formId: string | number) {
         const query = {
             limit: this.limit,
-            offset: 0,
+            offset: this.offset,
             orderby: "created_at",
-            filter: "created_at",
-            fullText: "",
+            fullText: "true",
         }
-        console.log("formId", formId)
         const submissions:SubmissionType[] = await this.jotform.getFormSubmissions(formId.toString(), query);
-        return submissions;
+        if (submissions.length < this.limit) {
+            this.offset = 0;
+            return submissions;
+        } else {
+            this.offset+=this.limit;
+            return submissions.concat(await this.getSubmissionsFromFormId(formId));
+        }
+    }
+
+    getContentByEmail(email: string) {
+        const submission = Object.values(this.submissions).find((submission: SubmissionType) => {
+            // rep email
+            const rep = Object.values(submission.answers).find((answer: any) => answer.name?.toLowerCase().startsWith("rremail")) as answerType;
+            // clientemail write also one for client email
+            return rep.answer == email;
+        });
+        if (submission) {
+            return submission;
+        }
+        return null;
+    }
+
+    getSubmissionsByEmail(email: string) {
+        const submissions = Object.values(this.submissions).filter((submission: SubmissionType) => {
+            // rep email
+            const rep = Object.values(submission.answers).find((answer: any) => answer.name?.toLowerCase().startsWith("rremail")) as answerType;
+            // clientemail write also one for client email
+            return rep.answer == email;
+        });
+        if (submissions) {
+            return submissions;
+        }
+        return null;
     }
 }
 

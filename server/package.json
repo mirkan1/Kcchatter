@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --watch \"src/***\" --ext \"ts,json\" --exec \"ts-node src/index.ts\""
+    "dev": "nodemon --watch \"src/***\" --ext \"ts,json\" --exec \"ts-node src/index.ts\"",
+    "start": "ts-node src/index.ts"
   },
   "keywords": [],
   "author": "Renas Mirkan Kilic",

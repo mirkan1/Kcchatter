@@ -1,4 +1,5 @@
 import express, { Request, Response} from "express";
+import { setTimeout } from 'timers/promises'
 import mongoose from "mongoose";
 import User from "./models/User";
 import Jotform from "./jotform-api";
@@ -22,8 +23,10 @@ app.use(express.json());
 const PORT = process.env.PORT || 5000;
 
 const db = mongoose.connect(process.env.MONGOOSE_URL).then(
-    () => {
-        console.log("Connected to MongoDB");
+    async () => {
+        console.log("MongoDB is ready!");
+        await jotform.setSubmissions();
+        console.log("JotForm is ready!");
         app.listen(PORT, () => {
             console.log(`Example app listening on http://localhost:${PORT}`);
         });
@@ -129,10 +132,37 @@ app.get("/api/getSubmissions", (req:Request, res:Response) => {
     //@ts-ignore
     const content = jotform.getSubmissions();
     const contentLength = Object.keys(content).length;
-    console.log("contentLength :", contentLength)
     res.json({
         content: {...content},
         status: 200,
         count: contentLength
     });
+});
+
+app.get("/api/getContentByEmail", (req:Request, res:Response) => {
+    //@ts-ignore
+    const content = jotform.getContentByEmail(req.query.email);
+    const contentLength = Object.keys(content).length;
+    res.json({
+        content: {...content},
+        status: 200,
+        count: contentLength
+    });
+});
+
+app.get("/api/getSubmissionsByEmail", (req:Request, res:Response) => {
+    //@ts-ignore
+    const content = jotform.getSubmissionsByEmail(req.query.email);
+    const contentLength = Object.keys(content).length;
+    res.json({
+        content: {...content},
+        status: 200,
+        count: contentLength
+    });
+});
+
+app.get("/api/getUsage", async (req:Request, res:Response) => {
+    //@ts-ignore
+    const content = await jotform.getUsage();
+    res.json(content);
 });

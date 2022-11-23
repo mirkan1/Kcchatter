@@ -16,6 +16,9 @@ export default class FormHandler {
     url: string | undefined;
     username: string | undefined;
 
+    private limit: number = 10;
+    // private offset: number = 0;
+
     constructor(formId: string | number) {
         this.getForm(formId);
     }
@@ -41,5 +44,31 @@ export default class FormHandler {
     async getTotalSubmissions(formId: string | number) {
         const response = await axios.get('http://localhost:5555/api/getForm?formId=' + formId);
         return response.data.count;
+    }
+
+    setLimit(limit: number) {
+        if (this.limit > 1000) throw new Error('Limit cannot be greater than 1000');
+        if (this.limit < 1) throw new Error('Limit cannot be less than 1');
+        this.limit = limit;
+    }
+
+    async getSubmissions() {
+        const response = await axios.get(`http://localhost:5555/api/getSubmissions?`);
+        return response.data;
+    }
+
+    async getRowsByEmail(email: string) {
+        const response = await axios.get(`http://localhost:5555/api/getRowsByEmail?email=${email}`);
+        return response.data;
+    }
+
+    async getContentByEmail(email: string) {
+        const response = await axios.get(`http://localhost:5555/api/getContentByEmail?email=${email}`);
+        return response.data;
+    }
+
+    async getSubmissionsByEmail(email: string) {
+        const response = await axios.get(`http://localhost:5555/api/getSubmissionsByEmail?email=${email}`);
+        return response.data;
     }
 }

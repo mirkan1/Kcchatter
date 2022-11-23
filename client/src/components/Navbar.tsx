@@ -4,17 +4,39 @@ import "./Navbar.css";
 export default function Navbar(props: any) {
     const user = props.user;
     const setUser = props.setUser;
+    const totalSubmissions = props.totalSubmissions;
+    const submissionsCount = props.submissionsCount;
     const handleSetUser = () => {
         setUser(null);
     }
     return (
         <div className="navbar">
-            <div id="nav-logo-section" className="nav-section">
-                <h1>Logo</h1>
+            <div id="nav-logo-section">
+                <img alt="logo" src="logo" />
             </div>
-            <div id="nav-user-section" className="nav-section">
-                {user ? <h1>{user.name}</h1> : <h1>Guest</h1>}
-                {user ? <h1 onClick={handleSetUser}>Logout</h1> : null}
+            <div id="nav-user-section">
+                <div className="username">
+                    {user ? <p>{user.name}</p> : <p>Guest</p>}
+                </div>
+                <div className="navbar-logon-div">
+                    {user ? <a className="logon" href="#" onClick={handleSetUser}>Logout</a> : null}
+                </div>
+                <div className="status">
+                {user ? <>
+                    <div className="status-inner">
+                        <div>OPEN</div>
+                        <div>{submissionsCount.open} x {submissionsCount.closed}</div>
+                    </div>
+                    <div className="status-inner">
+                        <div>TOTAL</div>
+                        <div>{totalSubmissions.toString()}</div>
+                    </div>
+                    <div className="status-inner">
+                        <div>% Open</div>
+                        <div>25%</div>
+                    </div></>
+                : null}
+                </div>
             </div>
         </div>
     );

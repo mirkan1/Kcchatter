@@ -36,13 +36,16 @@ function Login(props: any) {
         updated_at = mongoLogin.updated_at;
       }
       setUser({
-        _email, name, rows, role,
+        email:_email, name, rows, role,
         created_at, updated_at,
       });
     } else {
-      console.log("invalid email");
+      alert("invalid email");
     }
   }
+  useEffect(() => {
+    setEmail("MIKE.MAZZOLA@CROSSMARK.COM");
+  }, []);
 
   return (
     <div className="smaller-body">
