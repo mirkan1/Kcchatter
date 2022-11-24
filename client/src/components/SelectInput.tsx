@@ -77,6 +77,10 @@ export default function SelectInput(props: any) {
 
     return (
         <div className="select-input">            
+            <select className="select" onChange={handleSelect}>
+                <option value="" className="option">CHOOSE</option>
+                {rows.map((row: any, index: number) => <option className="option" key={row[fullAddressIndex]} value={index}>{row[fullAddressIndex]}</option>)}
+            </select>
             <div className="above-selection-class">
                 <h6>Show Only Open Tasks</h6>
                 <ToggleButton
@@ -90,10 +94,6 @@ export default function SelectInput(props: any) {
                         setSubmissionStatus(value ? "ACTIVE" : "CLOSED");
                     }} />
             </div>
-            <select className="select" onChange={handleSelect}>
-                <option value="" className="option">CHOOSE</option>
-                {rows.map((row: any, index: number) => <option className="option" key={row[fullAddressIndex]} value={index}>{row[fullAddressIndex]}</option>)}
-            </select>
             <div className="selected-row">
                 {/* {selectedRow ? <h1>{selectedRow[fullAddressIndex]}</h1> : null} */}
                 {selectedRow ? <button onClick={handleGoForm}>go to form</button> : null}

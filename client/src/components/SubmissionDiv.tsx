@@ -61,7 +61,7 @@ export default function SubmissionDiv(props: any) {
             // make a div with 4 columns and 7 rows using grid css
             return (
                 <div className="single-submission" key={id}>
-                    <div><p>{store.answer}</p></div>
+                    <div className="single-submission-store-name"><p>{store.answer}</p></div>
                     <div className="single-submission-row">
                         <div className="single-submission-column">
                             <div className="single-submission-cell">
