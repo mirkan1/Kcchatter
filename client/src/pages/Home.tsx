@@ -73,11 +73,7 @@ function Home(props: any) {
           imgObserver.observe(img);
         });
 
-    }, [submissions]);
-    // console.log("display", display)
-    // console.log("url", url)
-    // console.log("submissions.length", submissions.length)
-    // console.log("selected", index, selectedRow)
+    }, [selectedRow]);
 
     return (
         <>
