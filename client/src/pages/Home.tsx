@@ -73,7 +73,7 @@ function Home(props: any) {
           imgObserver.observe(img);
         });
 
-    }, [selectedRow]);
+    }, [selectedRow, submissions]);
 
     return (
         <>
