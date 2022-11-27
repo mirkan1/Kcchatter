@@ -1,0 +1,20 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+	  "./index.html",
+	  "./src/**/*.{ts,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+ 	dark: '#1D3354',
+	oblue: '#467599',
+	midblue: '#CDE6F5',
+	lightblue: '#E9F6FE',
+	red: '#EF4040',
+	
+    	}
+    },
+  },
+  plugins: [],
+}
