@@ -156,7 +156,7 @@ function Home(props: any) {
                         <SimpleImageSlider width={280} height={200} images={task.pics} showBullets={true} showNavs={true}/>
                     </div>
                     
-                    <div className='flex gap-32'>
+                    <div className='flex justify-center gap-32'>
                             <div className="bg-lightblue w-8/12 rounded-md p-4">
                                 <h1 className="text-xs lg:text-lg"><b>CLIENT RESPONSE:&emsp;</b>Example</h1>
                                 <h1 className="text-xs lg:text-lg"><b>CMK REP RESPONSE:&emsp;</b>Example </h1>
