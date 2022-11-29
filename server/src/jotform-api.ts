@@ -203,7 +203,6 @@ class Jotform {
 
     async newSubmissionAvailable() {
         const form: FormType = await this.getForm(this.formId);
-        console.log(form.count, this.submissionCount.toString())
         if (form.count != this.submissionCount.toString()) {
             return true;
         }
