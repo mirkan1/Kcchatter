@@ -3,10 +3,20 @@ import { Date } from "mongoose";
 // require("dotenv").config();
 
 type FormType = {
-    content: string | object | [];
-    responseCode: number;
-    duration: number;
-    message: answerType;
+    id: string,
+    username: string,
+    title: string,
+    height: string,
+    status: string,
+    created_at: string,
+    updated_at: string,
+    last_submission: string,
+    new: string,
+    count: string,
+    type: string,
+    favorite: string,
+    archived: string,
+    url: string,
 }
 
 type answerType = {
@@ -26,13 +36,17 @@ type SubmissionType = {
     new: string;
     flag: string;
     notes: string;
-    updated_at: string; // "YYYY-MM-DD HH:MM:SS"
-    answers: object;
+    updated_at: string | null; // "YYYY-MM-DD HH:MM:SS"
+    answers: {
+        [key: string]: answerType;
+    };
 }
 
 class Jotform {
     private jotform: any;
-    private submissions: SubmissionType[] = [];
+    private submissions: {
+        [key: string]: SubmissionType;
+    } = {};
     private submissionCount: number = 0;
     private formId: number | string;
     private limit: number = 1000;
@@ -43,7 +57,8 @@ class Jotform {
             debug: debug,
             apiKey: process.env.JOTFORM_API_KEY
         });
-        this.jotform = jotform
+        this.jotform = jotform;
+        this.limit = limit;
         this.setFormId(formId);
     }
 
@@ -58,6 +73,10 @@ class Jotform {
 
     getJotform() {
         return this.jotform;
+    }
+
+    getSubmissionCount() {
+        return this.submissionCount;
     }
 
     getSubmissionIfExists(submissionId: string) {
@@ -83,11 +102,15 @@ class Jotform {
         submissions.forEach(element => {
             this.setSubmissionIntoSubmissions(element);
         });
-        if (this.submissionCount == this.submissions.length) {
+        const submissionsLength = Object.keys(this.submissions).length;
+        if (this.submissionCount == submissionsLength) {
             return true;
         }
-        this.submissions = this.sortSubmissionsByDate(submissions);
-        this.submissionCount = this.submissions.length;
+        const sortedSubmissions = this.sortSubmissionsByDate(submissions);
+        sortedSubmissions.forEach(element => {
+            this.setSubmissionIntoSubmissions(element);
+        });
+        this.submissionCount = submissionsLength;
         this.isReady = true;
     }
 
@@ -176,6 +199,15 @@ class Jotform {
             return submissions;
         }
         return null;
+    }
+
+    async newSubmissionAvailable() {
+        const form: FormType = await this.getForm(this.formId);
+        console.log(form.count, this.submissionCount.toString())
+        if (form.count != this.submissionCount.toString()) {
+            return true;
+        }
+        return false;
     }
 }
 

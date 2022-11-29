@@ -7,8 +7,8 @@ import Reader from "./excell-reader";
 import cors from "cors";
 import dotenv from "dotenv";
 dotenv.config();
-const limit = parseInt(process.env.LIMIT || "1000");
-const jotform = new Jotform(true, process.env.FORM_ID, limit);
+// const limit = parseInt(process.env.LIMIT || "1000");
+const jotform = new Jotform(true, process.env.FORM_ID);
 const app = express();
 const path = "./src/static/records.csv";
 const reader = new Reader(path);
@@ -26,6 +26,19 @@ const db = mongoose.connect(process.env.MONGOOSE_URL).then(
     async () => {
         console.log("MongoDB is ready!");
         await jotform.setSubmissions();
+        setInterval(async () => {
+            const newSubmissionAvailable = await jotform.newSubmissionAvailable();
+            if (newSubmissionAvailable) {
+                // set submissions
+                const oldSubmissionCount = jotform.getSubmissionCount();
+                await jotform.setSubmissions();
+                const newSubmissionCount = jotform.getSubmissionCount();
+                console.log(`${newSubmissionCount - oldSubmissionCount} new submissions found`);
+            } else {                
+                console.log("No new submissions found");
+            }
+            // every 5 minutes 300000
+        }, 300000);
         console.log("JotForm is ready!");
         app.listen(PORT, () => {
             console.log(`Example app listening on http://localhost:${PORT}`);
