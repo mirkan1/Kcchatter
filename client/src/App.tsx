@@ -7,17 +7,19 @@ const FORM_ID = "222004147160036";
 
 function App() {
   const [user, setUser] = useState(null);
-  const [totalSubmissions, setTotalSubmissions] = useState(0);  
-  const [submissionsCount, setSubmissionsCount] = useState({
-    open: 0,
-    closed: 0,
-});
+  if (user) {
+    return (  
+      <Home FORM_ID={FORM_ID} user={user} setUser={setUser}/>
+    )
+  } else {
     return (  
       <>
-        <Navbar user={user} setUser={setUser} totalSubmissions={totalSubmissions} submissionsCount={submissionsCount}/>
-        <Home FORM_ID={FORM_ID} user={user} setTotalSubmissions={setTotalSubmissions} setSubmissionsCount={setSubmissionsCount} submissionsCount={submissionsCount}/>
+        <Navbar user={user} setUser={setUser} submissionsCount={{active: 0, inactive:0}}/>
+        <Login setUser={setUser}/>
       </>    
     )
+    
+  }
 }
 
 export default App;
