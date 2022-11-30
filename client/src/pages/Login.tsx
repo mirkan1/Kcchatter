@@ -51,12 +51,12 @@ function Login(props: any) {
   }, []);
 
   return (
-    <div className="border-b border-gray-300 bg-lightblue h-screen">
-      <div className="container gap-6 mx-auto flex flex-col items-center bg-lightblue">
-        <b className="lg:text-3xl p-24 text-dark">Welcome To Login Page</b>
-        <input className="text-xs lg:text-base w-4/5 lg:w-1/5 h-10 rounded-md border-2 border-dark p-4" onChange={onEmailChange} value={email} type="text" name="email" placeholder="email..." />
-        <button className="flex items-center justify-center w-24 h-12 bg-dark hover:bg-indigo-800 transition-colors rounded-md" onClick={handleLogin}>
-        <h1 className="text-base text-lightblue">Log In</h1>
+    <div className="font-mono border-b border-gray-300 bg-crossmaskblue h-screen">
+      <div className="container gap-6 mx-auto flex flex-col items-center">
+        <h1 className="lg:text-3xl p-24 font-medium text-white">Welcome To Login Page</h1>
+        <input className="text-xs lg:text-base w-4/5 lg:w-1/5 h-10 rounded-md border-2 text-crossmarkblue border-dark p-4" onChange={onEmailChange} value={email} type="text" name="email" placeholder="email..." />
+        <button className="flex items-center justify-center w-24 h-12 bg-white hover:bg-gray-400 transition-colors rounded-md" onClick={handleLogin}>
+        <h1 className="text-base font-bold text-crossmaskblue">Log In</h1>
         </button> 
       </div> </div>
   );

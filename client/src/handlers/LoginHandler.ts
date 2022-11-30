@@ -13,7 +13,7 @@ export default class LoginHandler {
             'http://localhost:5555/api/user?email=' + email,
             this.config
         );
-        console.log(response)
+        //console.log(response)
         return response.data;
     }
 
@@ -22,7 +22,7 @@ export default class LoginHandler {
             'http://localhost:5555/api/getForm?formId=' + formId,
             this.config
         );
-        console.log(response)
+        //console.log(response)
         return response.data.count;
     }
 
@@ -31,7 +31,7 @@ export default class LoginHandler {
             'http://localhost:5555/api/getRowsByEmail?email=' + email,
             this.config
         );
-        console.log(response)
+        //console.log(response)
         return response.data;
     }
 
@@ -45,7 +45,7 @@ export default class LoginHandler {
             },
             this.config
         );
-        console.log(response)
+        //console.log(response)
         return response.data;
     }
 }

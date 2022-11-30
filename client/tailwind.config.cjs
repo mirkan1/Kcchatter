@@ -12,6 +12,7 @@ module.exports = {
 	lightblue: '#E9F6FE',
 	red: '#EF4040',
   dark: '#022042',
+  crossmaskblue: '#0060a9'
   /* --background-color: var(--dark-gray);
   --border-color: var(--light-gray); */
     	}
