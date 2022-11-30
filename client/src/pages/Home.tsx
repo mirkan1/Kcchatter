@@ -75,11 +75,9 @@ function Home(props: any) {
                 <Select onChange={(selectedOption: any) => {handleSelection(selectedOption)}} options={user.rows} getOptionValue={option=>option} getOptionLabel={option=>option[14]}/>
             </div>
                         
-            <div className='container mx-auto flex justify-left items-center rounded pl-6 '>
-                <div className="bg-green-300 rounded">
-                    <button className='font-bold text-green-800 p-2 lg:p-4' onClick={firstSubmissionHandler}>OPEN</button>
-                </div>
-            </div>
+            {selectedStore.length ? <div className='container mx-auto flex justify-left items-center rounded pl-6 '>
+               <button className='bg-green-300 transtion hover:bg-green-200 transition rounded font-bold text-green-900 p-2 lg:p-4' onClick={firstSubmissionHandler}>OPEN</button>
+            </div>: null}
             {submissions.map((item: any, idx) => {
             const answers = Object.values(item.answers);
             const store = answers.find((answer: any) => answer.name?.toLowerCase().startsWith("store")) as answerType;            
