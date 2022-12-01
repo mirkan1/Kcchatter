@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import LoginHandler from "../handlers/LoginHandler";
-import "./Login.css";
 
 function Login(props: any) {
   const setUser = props.setUser;
@@ -51,7 +50,7 @@ function Login(props: any) {
   }, []);
 
   return (
-    <div className="font-mono border-b border-gray-300 bg-crossmaskblue h-screen">
+    <div className="font-mono ">
       <div className="container gap-6 mx-auto flex flex-col items-center">
         <h1 className="lg:text-3xl p-24 font-medium text-white">Welcome To Login Page</h1>
         <input className="text-xs lg:text-base w-4/5 lg:w-1/5 h-10 rounded-md border-2 text-crossmarkblue border-dark p-4" onChange={onEmailChange} value={email} type="text" name="email" placeholder="email..." />

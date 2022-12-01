@@ -1,8 +1,6 @@
 import { useState, useEffect} from "react";
 import FormHandler from "../handlers/FormHandler";
 import Navbar from '../components/Navbar';
-//@ts-ignore
-import "./Home.css";
 import Select from 'react-select';
 import SimpleImageSlider from 'react-simple-image-slider';
 
@@ -14,25 +12,27 @@ type answerType = {
     answer: string;
 }
 
-type photoAnswerType = {
-    name: string;
-    order: string;
-    text: string;
-    type: string;
-    answer: [];
-}
-
-
 function Home(props: any) {
     const formId = props.FORM_ID;
     const formHandler = new FormHandler(formId);
-
     const user = props.user;
     const setUser = props.setUser
     const [submissions, setSubmissions] = useState([]);
-    const [selectedStore, setSelectedStore] = useState([]);
+    const [selectedStore, setSelectedStore] = useState(Array<any>);
+    const [all, setAll] = useState(false);
     const [size, setSize] = useState(0); // Img sizes
 
+    function dataHandler(answers: any){
+        function keyFinder(answers: any, key: string){
+            return answers.find((answer: any) => answer.name?.toLowerCase().startsWith(key)) as answerType;            
+        }
+        let outAnswers: any = {};
+        const keys: Array<string> = ['store', 'rep', 'comments', 'photos', 'toggle', 'category', 'clientmessage', 'clientname', 'clientemail', 'topics', 'represponse', 'repmessage', 'rremail', 'followupneeded', '🥔'];
+        keys.forEach((key) => {
+            outAnswers[key] = keyFinder(answers, key);
+        })
+        return outAnswers
+    }
     const handleSelection = (selectedOption: any) => {
         setSelectedStore(Object.values(selectedOption))
     }
@@ -62,7 +62,10 @@ function Home(props: any) {
     }, []);
 
     const firstSubmissionHandler = () => {
-        const url = ""
+        const baseUrl = "https://jotform.com/" + formId + "?";
+        const params = "&REP=1&STORE=2&3=3&";
+        const url = baseUrl+params;
+        return window.location.href = url;
     }
 
     var submissionsCount = {active: 0, inactive: 0};
@@ -75,58 +78,43 @@ function Home(props: any) {
                 <Select onChange={(selectedOption: any) => {handleSelection(selectedOption)}} options={user.rows} getOptionValue={option=>option} getOptionLabel={option=>option[14]}/>
             </div>
                         
-            {selectedStore.length ? <div className='container mx-auto flex justify-left items-center rounded pl-6 '>
-               <button className='bg-green-300 transtion hover:bg-green-200 transition rounded font-bold text-green-900 p-2 lg:p-4' onClick={firstSubmissionHandler}>OPEN</button>
-            </div>: null}
+            <div className='container mx-auto flex justify-left items-center rounded pl-6 '>
+               {selectedStore.length ? <button className='bg-white-300 transtion bg-white hover:bg-gray-300 border-2 border-gray-400 transition rounded font-bold text-green-900 p-2 lg:p-3 mr-2' onClick={firstSubmissionHandler}>OPEN FORM</button>: null}
+               <button className='bg-white-300 transtion bg-white hover:bg-gray-300 border-2 border-gray-400 transition rounded font-bold text-green-900 p-2 lg:p-3' onClick={() => {setAll(!all)}}>{all ? 'SHOW LESS': 'SHOW ALL'}</button>
+            </div>
             {submissions.map((item: any, idx) => {
-            const answers = Object.values(item.answers);
-            const store = answers.find((answer: any) => answer.name?.toLowerCase().startsWith("store")) as answerType;            
-            const rep = answers.find((answer: any) => answer.name?.toLowerCase().startsWith("rep")) as answerType;
-            const comments = answers.find((answer: any) => answer.name?.toLowerCase().startsWith("comments")) as answerType;
-            const photos = answers.find((answer: any) => answer.name?.toLowerCase().startsWith("photos")) as photoAnswerType;
-            const toggle = answers.find((answer: any) => answer.name?.toLowerCase().startsWith("toggle")) as answerType;
-            const category = answers.find((answer: any) => answer.name?.toLowerCase().startsWith("category")) as answerType;
-            const clientMessage = answers.find((answer: any) => answer.name?.toLowerCase().startsWith("clientmessage")) as answerType;
-            const clientName = answers.find((answer: any) => answer.name?.toLowerCase().startsWith("clientname")) as answerType;
-            const clientEmail = answers.find((answer: any) => answer.name?.toLowerCase().startsWith("clientemail")) as answerType;
-            const topics = answers.find((answer: any) => answer.name?.toLowerCase().startsWith("topics")) as answerType;
-            const repResponse = answers.find((answer: any) => answer.name?.toLowerCase().startsWith("represponse")) as answerType;
-            const repMessage = answers.find((answer: any) => answer.name?.toLowerCase().startsWith("repmessage")) as answerType;
-            const repEmail = answers.find((answer: any) => answer.name?.toLowerCase().startsWith("rremail")) as answerType;
-            const followUpNeeded = answers.find((answer: any) => answer.name?.toLowerCase().startsWith("followupneeded")) as answerType;
-            if (store.answer.toUpperCase() != selectedStore[14]?.toUpperCase()) {
-                return null;
-            }
+            
+            const answers = dataHandler(Object.values(item.answers)) as any;
+            
+            if (all || (answers.store.answer.toUpperCase() == selectedStore[14]?.toUpperCase())) {
             if (item.status == "ACTIVE")
                 submissionsCount.active += 1;
             else
                 submissionsCount.inactive += 1;
-            //console.log('answers', answers)
             return(
             <div className="container mx-auto p-6 font-mono" key={idx}>
-                <div className="bg-white border-b border-gray-300 text-center rounded-t p-2">
-                    <p>{store.answer}</p>
-                </div>
+                {(item.status == "ACTIVE") ?
+                <div className="font-bold text-green-900 text-xs lg:text-lg bg-green-300 border-b border-gray-300 text-center rounded-t p-2">{all ? answers.store.answer +' [' + item.status +']': item.status}
+                </div>:
+                <div className="font-bold text-xs lg:text-lg bg-red-400 border-b border-gray-300 text-center rounded-t p-2">{'CLOSED'}
+                </div>}
 
                 <div className="flex flex-col gap-2 lg:gap-6 bg-white border-1 border-gray-300 rounded-b p-4 lg:p-8">
                     <div className='lg:flex gap-4'>
                         <div className="border-2 border-gray-500 lg:w-8/12 rounded p-4">
-                            <p className="text-xs lg:text-lg"><b>CMK REP:&emsp;</b>{rep.answer}</p>
-                            <p className="text-xs lg:text-lg"><b>CATEGORY:&emsp;</b>{category.answer}</p>
-                            <p className="text-xs lg:text-lg"><b>TOPICS:&emsp;</b>{topics.answer}</p>
-                            <p className="text-xs lg:text-lg"><b>COMMENTS:&emsp;</b>{comments.answer}</p>
+                            <p className="text-xs lg:text-lg"><b>CMK REP:&emsp;</b>{answers.rep.answer}</p>
+                            <p className="text-xs lg:text-lg"><b>CATEGORY:&emsp;</b>{answers.category.answer}</p>
+                            <p className="text-xs lg:text-lg"><b>TOPICS:&emsp;</b>{answers.topics.answer}</p>
+                            <p className="text-xs lg:text-lg"><b>COMMENTS:&emsp;</b>{answers.comments.answer}</p>
                         </div>
                         <div className="justify-end lg:w-4/12 border-2 border-gray-500 rounded p-4 mt-2 lg:m-0">
-                            {(item.status == "ACTIVE") ?
-                            <p className="text-xs lg:text-lg"><b>STATUS:&emsp;</b><b className="text-green-500">{item.status}</b></p>:
-                            <p className="text-xs lg:text-lg"><b>STATUS:&emsp;</b><b className="text-red-500">{item.status}</b></p>
-                            }
+                            
                             <p className="text-xs lg:text-lg"><b>OPEN DATA:&emsp;</b>{item.created_at}</p>
-                            <p className="text-xs lg:text-lg"><b>FOLLOW-UP:&emsp;</b>{followUpNeeded.answer}</p>
+                            <p className="text-xs lg:text-lg"><b>FOLLOW-UP:&emsp;</b>{answers.followupneeded.answer}</p>
                         </div>
-                    </div> {photos ?
+                    </div> {answers.photos ?
                     <div className="flex justify-center border-2 border-gray-500 p-4 rounded">
-                        <SimpleImageSlider width={size} height={size} images={photos.answer} showBullets={false} showNavs={false}/>
+                        <SimpleImageSlider width={size} height={size} images={answers.photos.answer} showBullets={false} showNavs={false}/>
                     </div>:
                     <div className="flex justify-center border-2 border-gray-500 p-4 rounded">
                         <SimpleImageSlider width={size} height={size} images={[]} showBullets={true} showNavs={true}/>
@@ -135,8 +123,8 @@ function Home(props: any) {
                     
                     <div className='lg:flex lg:items-end'>
                         <div className="border-2 border-gray-500 w-full rounded p-4">
-                            <p className="text-xs lg:text-lg"><b>CLIENT RESPONSE:&emsp;</b>{clientMessage.answer}</p>
-                            <p className="text-xs lg:text-lg"><b>CMK REP RESPONSE:&emsp;</b>{repMessage.answer}</p>
+                            <p className="text-xs lg:text-lg"><b>CLIENT RESPONSE:&emsp;</b>{answers.clientmessage.answer}</p>
+                            <p className="text-xs lg:text-lg"><b>CMK REP RESPONSE:&emsp;</b>{answers.repmessage.answer}</p>
                         </div>
                         <div className="flex lg:justify-end lg:w-4/12 mt-2 lg:m-0">
                             <a className="text-white text-xs lg:text-base border-2 border-gray-400 bg-crossmaskblue rounded transition hover:bg-indigo-800 p-2 mr-2" 
@@ -150,8 +138,12 @@ function Home(props: any) {
                     </div>
                 </div>
             </div>)
+
+            }
+            else if (answers.store.answer.toUpperCase() != selectedStore[14]?.toUpperCase()) {
+                return null;
+            }
             })}
-            {!(submissionsCount.active) ? <div className="h-screen bg-crossmaskblue"/>: null}
         </div>
         </>
     );

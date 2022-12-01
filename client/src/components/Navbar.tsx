@@ -1,6 +1,3 @@
-import { useState, useEffect } from "react";
-import "./Navbar.css";
-
 export default function Navbar(props: any) {
     //const imgUrl = new URL('../imgs/logo.png', import.meta.url).href
     const imgUrl = new URL('../imgs/logo_new.png', import.meta.url).href
@@ -51,7 +48,7 @@ export default function Navbar(props: any) {
                     <nav>
                         <div className="flex items-center justify-center px-2 lg:px-6 flex-col lg:gap-3">
                             <p className='text-crossmaskblue font-semibold text-xs lg:text-lg'>{user.name}</p>
-                            <a className='text-xs lg:text-lg underline font-semibold text-red text-center hover:text-crossmaskblue transition' href='#' onClick={handleSetUser}>LOGOUT</a>
+                            <a className='text-xs lg:text-lg underline font-semibold text-red-500 text-center hover:text-black transition' href='#' onClick={handleSetUser}>LOGOUT</a>
                         </div>
                     </nav>
                 </div>
